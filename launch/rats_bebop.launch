@@ -1,8 +1,9 @@
 <launch>
     <arg name="drone_name"/>
     <arg name="pose_topic_name"/>
+    <arg name="machine_name"/>
 
-    <node pkg="rats" type="ARLocROS" name="ARLocROS"
+    <node machine="$(arg machine_name)" pkg="rats" type="ARLocROS" name="ARLocROS"
           args="com.github.rosjava_catkin_package_a.ARLocROS.ARLoc" output="screen">
         <param name="pattern_dir" value="$(find rats)/ARLocROS/res/"/>
         <param name="marker_frame_name" value="markers" />
