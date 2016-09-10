@@ -186,7 +186,7 @@ public final class ComputePose {
 
 		Calib3d.solvePnPRansac(objectPoints, imagePoints, cameraMatrix, distCoeffs, rvec, tvec, false, 300, 5, 16,
 				inliers, Calib3d.CV_P3P);
-		ArMarkerLocalization.getLog().info("Points detected: " + points2dlist.size() + " inliers: " + inliers.size());
+		ArMarkerPoseEstimator.getLog().info("Points detected: " + points2dlist.size() + " inliers: " + inliers.size());
 		// avoid publish zero pose if localization failed
 		if (inliers.rows() == 0) {
 			return false;

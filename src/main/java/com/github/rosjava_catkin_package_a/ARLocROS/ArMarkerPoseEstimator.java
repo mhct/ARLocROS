@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2016 Marvin Ferber.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,14 +16,15 @@
 
 package com.github.rosjava_catkin_package_a.ARLocROS;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import javax.annotation.Nullable;
-
+import com.google.common.base.Optional;
+import geometry_msgs.Point;
+import geometry_msgs.Pose;
 import geometry_msgs.PoseStamped;
+import geometry_msgs.Quaternion;
+import geometry_msgs.Transform;
+import geometry_msgs.TransformStamped;
+import geometry_msgs.Vector3;
+import jp.nyatla.nyartoolkit.core.NyARException;
 import org.apache.commons.logging.Log;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
@@ -38,33 +39,29 @@ import org.ros.concurrent.CancellableLoop;
 import org.ros.message.MessageListener;
 import org.ros.message.Time;
 import org.ros.namespace.GraphName;
-import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Optional;
-
-import geometry_msgs.Point;
-import geometry_msgs.Pose;
-import geometry_msgs.Quaternion;
-import geometry_msgs.Transform;
-import geometry_msgs.TransformStamped;
-import geometry_msgs.Vector3;
-import jp.nyatla.nyartoolkit.core.NyARException;
 import sensor_msgs.CameraInfo;
 import tf2_msgs.TFMessage;
 import visualization_msgs.Marker;
+
+import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Main Class of the ARLocROS Node setting up publishers and subscribers. Note
  * the TF lookup implementation based on Transformer by Lorenz Moesenlechner.
  */
-public final class ArMarkerLocalization implements StateEstimator {
+public final class ArMarkerPoseEstimator implements PoseEstimator {
 
-	private static final Logger logger = LoggerFactory.getLogger(ArMarkerLocalization.class);
+	private static final Logger logger = LoggerFactory.getLogger(ArMarkerPoseEstimator.class);
 
 	private CameraParams camp;
 	private Mat image;
@@ -82,13 +79,20 @@ public final class ArMarkerLocalization implements StateEstimator {
 
 	private AtomicReference<PoseStamped> mostRecentPose;
 
-	private ArMarkerLocalization(ConnectedNode connectedNode) {
+	private ArMarkerPoseEstimator(final ConnectedNode connectedNode, Parameter parameter) {
 		mostRecentPose = new AtomicReference<>();
-		start(connectedNode);
+		this.parameter = parameter;
+		Executors.newSingleThreadExecutor().submit(new Runnable() {
+			@Override
+			public void run() {
+				start(connectedNode);
+			}
+		});
 	}
 
-	public static ArMarkerLocalization create(
-			ConnectedNode connectedNode) {return new ArMarkerLocalization(connectedNode);}
+	public static ArMarkerPoseEstimator create(
+			ConnectedNode connectedNode, Parameter parameter) {return new ArMarkerPoseEstimator
+			(connectedNode, parameter);}
 
 	private void start(final ConnectedNode connectedNode) {
 		// load OpenCV shared library
@@ -97,8 +101,6 @@ public final class ArMarkerLocalization implements StateEstimator {
 		// read configuration variables from the ROS Runtime (configured in the
 		// launch file)
 		log = connectedNode.getLog();
-		log.info("Reading parameters");
-		this.parameter = Parameter.createFromParameterTree(connectedNode.getParameterTree());
 
 		// Read Marker Config
 		markerConfig = MarkerConfig.createFromConfig(parameter.markerConfigFile(), parameter.patternDirectory());
@@ -187,7 +189,7 @@ public final class ArMarkerLocalization implements StateEstimator {
 				 * conversions/matrixToEuler/index.htm
 				 * http://stackoverflow.com/questions/12933284/rodrigues-into-
 				 * eulerangles-and-vice-versa
-				 * 
+				 *
 				 * heading = atan2(-m20,m00) attitude = asin(m10) bank =
 				 * atan2(-m12,m11)
 				 */
