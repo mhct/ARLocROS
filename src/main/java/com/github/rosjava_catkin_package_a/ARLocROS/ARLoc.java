@@ -28,7 +28,7 @@ public class ARLoc extends AbstractNodeMain {
 
     final Publisher<PoseStamped> posePublisher =
         connectedNode.newPublisher(parameter.poseTopicName(), PoseStamped._TYPE);
-    
+
     final FusedLocalization fusedLocalization =
         FusedLocalization.create(
             poseEstimator, velocityEstimator, posePublisher, 40, connectedNode);
