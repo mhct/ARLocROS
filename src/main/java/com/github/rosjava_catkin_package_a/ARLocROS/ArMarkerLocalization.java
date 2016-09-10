@@ -83,6 +83,7 @@ public final class ArMarkerLocalization implements StateEstimator {
 	private AtomicReference<PoseStamped> mostRecentPose;
 
 	private ArMarkerLocalization(ConnectedNode connectedNode) {
+		mostRecentPose = new AtomicReference<>();
 		start(connectedNode);
 	}
 
