@@ -77,11 +77,15 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 	protected boolean smoothing = true;
 	private static Log log;
 
+	private final Publisher<PoseStamped> posePublisher;
+
 	private AtomicReference<PoseStamped> mostRecentPose;
 
-	private ArMarkerPoseEstimator(final ConnectedNode connectedNode, Parameter parameter) {
+	private ArMarkerPoseEstimator(final ConnectedNode connectedNode, Parameter parameter,
+			Publisher<PoseStamped> posePublisher) {
 		mostRecentPose = new AtomicReference<>();
 		this.parameter = parameter;
+		this.posePublisher = posePublisher;
 		Executors.newSingleThreadExecutor().submit(new Runnable() {
 			@Override
 			public void run() {
@@ -377,9 +381,6 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 		});
 
 		// Publish Pose
-
-		final Publisher<geometry_msgs.PoseStamped> posePublisher = connectedNode.newPublisher(parameter.poseTopicName(),
-				geometry_msgs.PoseStamped._TYPE);
 
 		connectedNode.executeCancellableLoop(new CancellableLoop() {
 

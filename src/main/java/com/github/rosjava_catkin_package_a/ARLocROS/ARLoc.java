@@ -17,17 +17,18 @@ public class ARLoc extends AbstractNodeMain {
   @Override
   public void onStart(ConnectedNode connectedNode) {
     final Parameter parameter = Parameter.createFromParameterTree(connectedNode.getParameterTree());
+    final Publisher<PoseStamped> posePublisher =
+        connectedNode.newPublisher(parameter.poseTopicName(), PoseStamped._TYPE);
 
-    final PoseEstimator poseEstimator = ArMarkerPoseEstimator.create(connectedNode, parameter);
+    final PoseEstimator poseEstimator =
+        ArMarkerPoseEstimator.create(connectedNode, parameter, posePublisher);
+
     final BebopOdomVelocityEstimator velocityEstimator = BebopOdomVelocityEstimator.create();
 
     final MessagesSubscriberService<Odometry> odomSubscriber =
         MessagesSubscriberService.create(
             connectedNode.<Odometry>newSubscriber("/bebop/odom", Odometry._TYPE));
     odomSubscriber.registerMessageObserver(velocityEstimator);
-
-    final Publisher<PoseStamped> posePublisher =
-        connectedNode.newPublisher(parameter.poseTopicName(), PoseStamped._TYPE);
 
     final FusedLocalization fusedLocalization =
         FusedLocalization.create(
