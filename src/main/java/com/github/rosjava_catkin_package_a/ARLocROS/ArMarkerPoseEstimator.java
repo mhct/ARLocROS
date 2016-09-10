@@ -95,8 +95,9 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 	}
 
 	public static ArMarkerPoseEstimator create(
-			ConnectedNode connectedNode, Parameter parameter) {return new ArMarkerPoseEstimator
-			(connectedNode, parameter);}
+			ConnectedNode connectedNode, Parameter parameter, Publisher<PoseStamped> posePublisher) {return new
+			ArMarkerPoseEstimator
+			(connectedNode, parameter, posePublisher);}
 
 	private void start(final ConnectedNode connectedNode) {
 		// load OpenCV shared library
