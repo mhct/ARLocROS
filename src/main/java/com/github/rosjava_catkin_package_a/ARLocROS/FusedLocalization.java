@@ -19,12 +19,8 @@ public final class FusedLocalization {
   private final Publisher<PoseStamped> posePublisher;
   private final ConnectedNode connectedNode;
 
-  private FusedLocalization(
-      PoseEstimator poseEstimator,
-      VelocityEstimator velocityEstimator,
-      Publisher<PoseStamped> posePublisher,
-      double publishFrequency,
-      ConnectedNode connectedNode) {
+  private FusedLocalization(PoseEstimator poseEstimator, VelocityEstimator velocityEstimator,
+      Publisher<PoseStamped> posePublisher, double publishFrequency, ConnectedNode connectedNode) {
     this.poseEstimator = poseEstimator;
     this.velocityEstimator = velocityEstimator;
     this.posePublisher = posePublisher;
@@ -32,22 +28,20 @@ public final class FusedLocalization {
 
     final long publishRateInNanoSeconds = (long) (1.0E9 / publishFrequency);
     Executors.newSingleThreadScheduledExecutor()
-        .scheduleAtFixedRate(
-            new FuseAndPublishPose(), 0, publishRateInNanoSeconds, TimeUnit.NANOSECONDS);
+        .scheduleAtFixedRate(new FuseAndPublishPose(), 0, publishRateInNanoSeconds,
+            TimeUnit.NANOSECONDS);
   }
 
-  public static FusedLocalization create(
-      PoseEstimator poseEstimator,
-      VelocityEstimator velocityEstimator,
-      Publisher<PoseStamped> posePublisher,
-      double publishFrequency,
-      ConnectedNode connectedNode) {
-    return new FusedLocalization(
-        poseEstimator, velocityEstimator, posePublisher, publishFrequency, connectedNode);
+  public static FusedLocalization create(PoseEstimator poseEstimator,
+      VelocityEstimator velocityEstimator, Publisher<PoseStamped> posePublisher,
+      double publishFrequency, ConnectedNode connectedNode) {
+    return new FusedLocalization(poseEstimator, velocityEstimator, posePublisher, publishFrequency,
+        connectedNode);
   }
 
   private final class FuseAndPublishPose implements Runnable {
-    @Nullable PoseStamped lastPose;
+    @Nullable PoseStamped lastFusedPose;
+    @Nullable PoseStamped lastRawPoseReceived;
 
     private FuseAndPublishPose() {}
 
@@ -60,28 +54,39 @@ public final class FusedLocalization {
         return;
       }
 
-      if (lastPose == null) {
-        lastPose = rawPoseStamped.get();
-        posePublisher.publish(lastPose);
+      if (lastRawPoseReceived == null) {
+        lastRawPoseReceived = rawPoseStamped.get();
+      }
+
+      if (lastFusedPose == null) {
+        lastFusedPose = rawPoseStamped.get();
+        posePublisher.publish(lastFusedPose);
         return;
       }
 
-      lastPose = computeCurrentPose(rawPoseStamped.get(), velocityStamped.get());
-      posePublisher.publish(lastPose);
+      if (!lastRawPoseReceived.getHeader()
+          .getStamp()
+          .equals(rawPoseStamped.get().getHeader().getStamp())) {
+        lastRawPoseReceived = rawPoseStamped.get();
+        lastFusedPose = lastRawPoseReceived;
+      }
+
+      lastFusedPose = computeCurrentPose(rawPoseStamped.get(), velocityStamped.get());
+      posePublisher.publish(lastFusedPose);
     }
 
-    private PoseStamped computeCurrentPose(
-        PoseStamped rawPoseStamped, VelocityStamped velocityStamped) {
-      final double lastYaw =
-          EulerAngle.quaternionToEulerAngle(lastPose.getPose().getOrientation()).angleZ();
-      final Velocity inertialFrameVelocity =
-          bodyFrameVelocityToInertialFrameVelocity(velocityStamped.velocity(), lastYaw);
+    private PoseStamped computeCurrentPose(PoseStamped rawPoseStamped,
+        VelocityStamped velocityStamped) {
+      final double lastYaw = EulerAngle.quaternionToEulerAngle(
+          lastFusedPose.getPose().getOrientation()).angleZ();
+      final Velocity inertialFrameVelocity = bodyFrameVelocityToInertialFrameVelocity(
+          velocityStamped.velocity(), lastYaw);
 
       final Time currentTime = connectedNode.getCurrentTime();
-      final double timeDeltaInSeconds =
-          currentTime.subtract(lastPose.getHeader().getStamp()).totalNsecs() / 1.0E09;
+      final double timeDeltaInSeconds = currentTime.subtract(lastFusedPose.getHeader().getStamp())
+          .totalNsecs() / 1.0E09;
 
-      final Point lastPosition = lastPose.getPose().getPosition();
+      final Point lastPosition = lastFusedPose.getPose().getPosition();
       final double newPosX = lastPosition.getX() + timeDeltaInSeconds * inertialFrameVelocity.x();
       final double newPosY = lastPosition.getY() + timeDeltaInSeconds * inertialFrameVelocity.y();
       final double newPosZ = lastPosition.getZ() + timeDeltaInSeconds * inertialFrameVelocity.z();
@@ -96,8 +101,7 @@ public final class FusedLocalization {
       newPoseStamped.getPose().getPosition().setZ(newPosZ);
 
       final geometry_msgs.Quaternion quaternion = newPoseStamped.getPose().getOrientation();
-      newPoseStamped
-          .getPose()
+      newPoseStamped.getPose()
           .setOrientation(eulerToQuaternion(newYaw).toQuaternionMessage(quaternion));
 
       return newPoseStamped;
@@ -113,8 +117,8 @@ public final class FusedLocalization {
       return new Quaternion(0, 0, StrictMath.sin(yaw / 2), StrictMath.cos(yaw / 2));
     }
 
-    public Velocity bodyFrameVelocityToInertialFrameVelocity(
-        Velocity bodyFrameVelocity, double currentYaw) {
+    public Velocity bodyFrameVelocityToInertialFrameVelocity(Velocity bodyFrameVelocity,
+        double currentYaw) {
       // same linearZ
       final double linearZ = bodyFrameVelocity.z();
       // same angularZ
