@@ -79,12 +79,12 @@ public final class FusedLocalization {
         lastFusedPose = lastRawPoseReceived;
       }
 
-      lastFusedPose = computeCurrentPose(rawPoseStamped.get(), velocityStamped.get());
-      posePublisher.publish(lastFusedPose);
+      final PoseStamped fusedPose = computeCurrentPose(velocityStamped.get());
+      posePublisher.publish(fusedPose);
+      lastFusedPose = fusedPose;
     }
 
-    private PoseStamped computeCurrentPose(
-        PoseStamped rawPoseStamped, VelocityStamped velocityStamped) {
+    private PoseStamped computeCurrentPose(VelocityStamped velocityStamped) {
       final double lastYaw =
           EulerAngle.quaternionToEulerAngle(lastFusedPose.getPose().getOrientation()).angleZ();
       final Velocity inertialFrameVelocity =
