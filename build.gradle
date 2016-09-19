@@ -21,6 +21,14 @@ apply plugin: "idea"
 apply plugin: 'application'
 mainClassName = 'org.ros.RosRun'
 
+// delete starting scripts generated in build/scripts. It is for avoiding the non-unique
+// executable issue when using roslaunch.
+installApp {
+    doLast {
+        delete('build/scripts')
+    }
+}
+
 /* 
  Dependencies can be on external maven artifacts (such as rosjava_core
  here) or on sibling subprojects. Fpr external maven artifact dependencies
