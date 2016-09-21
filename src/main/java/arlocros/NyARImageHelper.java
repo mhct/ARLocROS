@@ -1,4 +1,4 @@
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import jp.nyatla.nyartoolkit.core.NyARException;
 import jp.nyatla.nyartoolkit.core.raster.rgb.INyARRgbRaster;

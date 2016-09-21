@@ -1,4 +1,4 @@
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import com.google.auto.value.AutoValue;
 import org.ros.node.parameter.ParameterTree;

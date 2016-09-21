@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import org.opencv.core.Point3;
 

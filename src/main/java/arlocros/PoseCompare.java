@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import org.ros.message.Time;
 import org.ros.rosjava_geometry.Transform;

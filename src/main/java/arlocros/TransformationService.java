@@ -1,4 +1,4 @@
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import geometry_msgs.TransformStamped;
 import org.ros.message.MessageListener;
@@ -8,8 +8,6 @@ import org.ros.node.topic.Subscriber;
 import org.ros.rosjava_geometry.Transform;
 import rosjava_tf_example.Transformer;
 import tf2_msgs.TFMessage;
-
-import java.util.List;
 
 /**
  * @author Hoang Tung Dinh

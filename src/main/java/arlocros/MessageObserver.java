@@ -1,4 +1,4 @@
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import org.ros.internal.message.Message;
 

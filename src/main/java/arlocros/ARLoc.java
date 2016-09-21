@@ -1,4 +1,4 @@
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import geometry_msgs.PoseStamped;
 import nav_msgs.Odometry;

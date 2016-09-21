@@ -1,4 +1,4 @@
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

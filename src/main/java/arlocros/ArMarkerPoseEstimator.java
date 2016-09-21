@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import com.google.common.base.Optional;
 import geometry_msgs.Point;

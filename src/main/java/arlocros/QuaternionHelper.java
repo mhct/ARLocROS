@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 /**
  * Quaternion class with useful helper functions to convert from Euler angles.

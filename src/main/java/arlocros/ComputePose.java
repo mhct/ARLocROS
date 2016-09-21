@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.github.rosjava_catkin_package_a.ARLocROS;
+package arlocros;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
