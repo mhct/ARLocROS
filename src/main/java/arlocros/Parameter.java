@@ -31,16 +31,16 @@ public abstract class Parameter {
 
   public static Parameter createFromParameterTree(ParameterTree parameterTree) {
     return builder()
-        .patternDirectory(parameterTree.getString("/ARLocROS/pattern_dir"))
-        .markerConfigFile(parameterTree.getString("/ARLocROS/marker_config_file"))
-        .markerFrameName(parameterTree.getString("/ARLocROS/marker_frame_name"))
-        .cameraFrameName(parameterTree.getString("/ARLocROS/camera_frame_name"))
-        .cameraImageTopic(parameterTree.getString("/ARLocROS/camera_image_topic"))
-        .cameraInfoTopic(parameterTree.getString("/ARLocROS/camera_info_topic"))
-        .badPoseReject(parameterTree.getBoolean("/ARLocROS/bad_pose_reject"))
-        .poseTopicName(parameterTree.getString("/ARLocROS/pose_topic_name"))
-        .visualization(parameterTree.getBoolean("/ARLocROS/visualization"))
-        .useThreshold(parameterTree.getBoolean("/ARLocROS/use_threshold"))
+        .patternDirectory(parameterTree.getString("/pattern_dir"))
+        .markerConfigFile(parameterTree.getString("/marker_config_file"))
+        .markerFrameName(parameterTree.getString("/marker_frame_name"))
+        .cameraFrameName(parameterTree.getString("/camera_frame_name"))
+        .cameraImageTopic(parameterTree.getString("/camera_image_topic"))
+        .cameraInfoTopic(parameterTree.getString("/camera_info_topic"))
+        .badPoseReject(parameterTree.getBoolean("/bad_pose_reject"))
+        .poseTopicName(parameterTree.getString("/pose_topic_name"))
+        .visualization(parameterTree.getBoolean("/visualization"))
+        .useThreshold(parameterTree.getBoolean("/use_threshold"))
         .build();
   }
 
