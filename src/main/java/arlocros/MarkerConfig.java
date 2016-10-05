@@ -45,7 +45,11 @@ public final class MarkerConfig {
             e.printStackTrace();
         } finally {
         	if (bufferedReader != null) {
-        		bufferedReader.close();
+        		try {
+        			bufferedReader.close();
+        		} catch (IOException e) {
+        			e.printStackTrace();
+        		}
         	}
         }
 
