@@ -16,5 +16,6 @@
     <param name="pose_topic_name" value="$(arg pose_topic_name)"/>
     <param name="visualization" value="false"/>
     <param name="use_threshold" value="$(arg use_threshold)"/>
+    <param name="black_white_contrast_level" value="$(arg black_white_contrast_level)"/>
   </node>
 </launch>

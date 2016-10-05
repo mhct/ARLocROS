@@ -151,7 +151,9 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 						//
 						image = Utils.matFromImage(message);
 						// uncomment to add more contrast to the image
-						//Utils.tresholdContrastBlackWhite(image, 600);
+						if (parameter.blackWhiteContrastLevel() > 0) {
+							Utils.tresholdContrastBlackWhite(image, parameter.blackWhiteContrastLevel());
+						}
 						if (parameter.useThreshold()) {
 							Imgproc.threshold(image, image, 200, 255, Imgproc.THRESH_BINARY);
 						}

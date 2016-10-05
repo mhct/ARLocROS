@@ -41,6 +41,7 @@ public abstract class Parameter {
         .poseTopicName(parameterTree.getString("/pose_topic_name"))
         .visualization(parameterTree.getBoolean("/visualization"))
         .useThreshold(parameterTree.getBoolean("/use_threshold"))
+        .blackWhiteContrastLevel(parameterTree.getDouble("/black_white_contrast_level"))
         .build();
   }
 
@@ -69,6 +70,8 @@ public abstract class Parameter {
     public abstract Builder visualization(boolean value);
 
     public abstract Builder useThreshold(boolean value);
+    
+    public abstract Builder blackWhiteContrastLevel(double value);
 
     public abstract Parameter build();
   }
