@@ -33,17 +33,20 @@ public final class MarkerConfig {
 
     private MarkerConfig(String configfile, String patternDirectory) {
         float size = 0;
+        BufferedReader bufferedReader = null;
         try {
-            final BufferedReader bufferedReader = new BufferedReader(new FileReader(configfile));
-            String line = bufferedReader.readLine();
-            while (line != null) {
-                size = readPatternSizeFromLine(size, line);
-                readPatternFromLine(patternDirectory, size, line);
-                line = bufferedReader.readLine();
+            bufferedReader = new BufferedReader(new FileReader(configfile));
+            String currentConfigurationLine = bufferedReader.readLine();
+            while ((currentConfigurationLine = bufferedReader.readLine()) != null) {
+                size = readMarkerSizeFromLine(currentConfigurationLine);
+                readPatternFromLine(patternDirectory, size, currentConfigurationLine);
             }
-            bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+        	if (bufferedReader != null) {
+        		bufferedReader.close();
+        	}
         }
 
         patterntSize = size;
@@ -56,37 +59,39 @@ public final class MarkerConfig {
     private void readPatternFromLine(String patternDirectory, float size, String line) {
         if (line.contains("patt")) {
             try {
-                final String[] values = line.split(" ");
-                final float x = Float.parseFloat(values[0]);
-                final float y = Float.parseFloat(values[1]);
-                final float z = Float.parseFloat(values[2]);
-
-                final String pattern = patternDirectory + values[3];
-                final Marker marker = Marker.builder()
-                        .patternFile(pattern)
-                        .upperleft(new Point3(x, y, z))
-                        .upperright(new Point3(x + size, y, z))
-                        .lowerright(new Point3(x + size, y - size, z))
-                        .lowerleft(new Point3(x, y - size, z))
-                        .build();
-
-                map.put(pattern, marker);
-                // patternlist.add(pattern);
-                // System.out.println("Adding pattern "+pattern);
+                final String[] configurationLineTokens = line.split(" ");
+                if (configurationLineTokens.length != 3) {
+                	throw new RuntimeException("Problem in patterns configuration file, at line: " + line);
+                } else {
+	                final float x = Float.parseFloat(configurationLineTokens[0]);
+	                final float y = Float.parseFloat(configurationLineTokens[1]);
+	                final float z = Float.parseFloat(configurationLineTokens[2]);
+	
+	                final String patternFilename = patternDirectory + configurationLineTokens[3];
+	                final Marker marker = Marker.builder()
+	                        .patternFile(patternFilename)
+	                        .upperleft(new Point3(x, y, z))
+	                        .upperright(new Point3(x + size, y, z))
+	                        .lowerright(new Point3(x + size, y - size, z))
+	                        .lowerleft(new Point3(x, y - size, z))
+	                        .build();
+	
+	                map.put(patternFilename, marker);
+	                // patternlist.add(pattern);
+	                // System.out.println("Adding pattern "+pattern);
+                }
             } catch (NumberFormatException e) {
                 return;
             }
         }
     }
 
-    private static float readPatternSizeFromLine(float size, String line) {
-        float newSize = size;
+    private static float readMarkerSizeFromLine(String line) {
+        float markerSize = 0.0f;
         if (line.contains("markersize")) {
-            newSize = Float.parseFloat(line.split(" ")[1]);
-            // System.out.println(s+" "+Float.parseFloat(s.split("
-            // ")[1]));
+            markerSize = Float.parseFloat(line.split(" ")[1]);
         }
-        return newSize;
+        return markerSize;
     }
 
     public List<Point3> create3dpointlist(String string) {
