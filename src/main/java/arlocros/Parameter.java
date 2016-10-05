@@ -28,6 +28,8 @@ public abstract class Parameter {
   public abstract boolean visualization();
 
   public abstract boolean useThreshold();
+  
+  public abstract double blackWhiteContrastLevel();
 
   public static Parameter createFromParameterTree(ParameterTree parameterTree) {
     return builder()
