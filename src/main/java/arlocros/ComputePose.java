@@ -70,7 +70,7 @@ public final class ComputePose {
 	private final MatOfDouble distCoeffs;
 	private final Int2ObjectMap<NyARCode> arCodes = new Int2ObjectLinkedOpenHashMap<>();
 	private final boolean visualization;
-	
+
 
 	private ComputePose(MarkerConfig markerConfig, Size size, Mat cameraMatrix, MatOfDouble
 			distCoeffs, boolean visualization)
@@ -82,6 +82,10 @@ public final class ComputePose {
 		// only load the whole configuration once
 		// get pattern files from marker config
 		markerPatterns = markerConfig.getPatternFileList();
+		if (markerPatterns.size() == 0) {
+			ArMarkerPoseEstimator.getLog().info("CANNOT LOAD ANY MARKER. PROBABLY THERE IS SOMETHING " +
+					"WRONG WITH THE MARKER CONFIG FILE");
+		}
 		// create hashmap of correspondences between id and file/pattern
 		// name
 		patternmap = new HashMap<>();
@@ -116,7 +120,7 @@ public final class ComputePose {
 	public boolean computePose(Mat rvec, Mat tvec, Mat image2) throws NyARException, FileNotFoundException {
 		// convert image to NyAR style for processing
 		final INyARRgbRaster imageRaster = NyARImageHelper.createFromMat(image2);
-		
+
 		// create new marker system configuration
 		i_config = new NyARMarkerSystemConfig(i_param);
 		markerSystemState = new NyARMarkerSystem(i_config);
@@ -130,7 +134,7 @@ public final class ComputePose {
 			ids[i] = markerSystemState.addARMarker(arCodes.get(i), 25, markerConfig.getMarkerSize());
 			patternmap.put(ids[i], markerPatterns.get(i));
 		}
-		
+
 		cameraSensorWrapper.update(imageRaster);
 		markerSystemState.update(cameraSensorWrapper);
 
