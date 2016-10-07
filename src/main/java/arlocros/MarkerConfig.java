@@ -64,7 +64,7 @@ public final class MarkerConfig {
         if (line.contains("patt")) {
             try {
                 final String[] configurationLineTokens = line.split(" ");
-                if (configurationLineTokens.length != 3) {
+                if (configurationLineTokens.length != 4) {
                 	throw new RuntimeException("Problem in patterns configuration file, at line: " + line);
                 } else {
 	                final float x = Float.parseFloat(configurationLineTokens[0]);
