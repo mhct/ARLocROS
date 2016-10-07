@@ -23,7 +23,14 @@ mainClassName = 'org.ros.RosRun'
 
 // delete starting scripts generated in build/scripts. It is for avoiding the non-unique
 // executable issue when using roslaunch.
+// This will not delete a build/scripts if the file is already there
 installApp {
+    doLast {
+        delete('build/scripts')
+    }
+}
+
+installDist {
     doLast {
         delete('build/scripts')
     }
