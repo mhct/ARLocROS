@@ -95,9 +95,9 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 	}
 
 	public static ArMarkerPoseEstimator create(
-			ConnectedNode connectedNode, Parameter parameter, Publisher<PoseStamped> posePublisher) {return new
-			ArMarkerPoseEstimator
-			(connectedNode, parameter, posePublisher);}
+			ConnectedNode connectedNode, Parameter parameter, Publisher<PoseStamped> posePublisher) {
+		return new ArMarkerPoseEstimator(connectedNode, parameter, posePublisher);
+	}
 
 	private void start(final ConnectedNode connectedNode) {
 		// load OpenCV shared library
@@ -151,7 +151,10 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 						//
 						image = Utils.matFromImage(message);
 						// uncomment to add more contrast to the image
-						//Utils.tresholdContrastBlackWhite(image, 600);
+						if (parameter.blackWhiteContrastLevel() > 0) {
+							log.trace("using BlackWhiteContrastLevel");
+							Utils.tresholdContrastBlackWhite(image, parameter.blackWhiteContrastLevel());
+						}
 						if (parameter.useThreshold()) {
 							Imgproc.threshold(image, image, 200, 255, Imgproc.THRESH_BINARY);
 						}
