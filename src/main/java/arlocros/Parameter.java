@@ -23,15 +23,17 @@ public abstract class Parameter {
 
   public abstract boolean badPoseReject();
 
-  public abstract String poseTopicName();
+  public abstract String fusedPoseTopicName();
+
+  public abstract String markerPoseTopicName();
 
   public abstract boolean visualization();
 
   public abstract boolean useThreshold();
-  
+
   public abstract double blackWhiteContrastLevel();
 
-  public static Parameter createFromParameterTree(ParameterTree parameterTree) {
+  public static Parameter createFrom(ParameterTree parameterTree) {
     return builder()
         .patternDirectory(parameterTree.getString("/pattern_dir"))
         .markerConfigFile(parameterTree.getString("/marker_config_file"))
@@ -40,7 +42,8 @@ public abstract class Parameter {
         .cameraImageTopic(parameterTree.getString("/camera_image_topic"))
         .cameraInfoTopic(parameterTree.getString("/camera_info_topic"))
         .badPoseReject(parameterTree.getBoolean("/bad_pose_reject"))
-        .poseTopicName(parameterTree.getString("/pose_topic_name"))
+        .fusedPoseTopicName(parameterTree.getString("/fused_pose_topic_name"))
+        .markerPoseTopicName(parameterTree.getString("/marker_pose_topic_name"))
         .visualization(parameterTree.getBoolean("/visualization"))
         .useThreshold(parameterTree.getBoolean("/use_threshold"))
         .blackWhiteContrastLevel(parameterTree.getDouble("/black_white_contrast_level"))
@@ -67,12 +70,14 @@ public abstract class Parameter {
 
     public abstract Builder badPoseReject(boolean value);
 
-    public abstract Builder poseTopicName(String value);
+    public abstract Builder fusedPoseTopicName(String value);
+
+    public abstract Builder markerPoseTopicName(String value);
 
     public abstract Builder visualization(boolean value);
 
     public abstract Builder useThreshold(boolean value);
-    
+
     public abstract Builder blackWhiteContrastLevel(double value);
 
     public abstract Parameter build();
