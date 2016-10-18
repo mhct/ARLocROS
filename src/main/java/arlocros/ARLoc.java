@@ -16,12 +16,12 @@ public class ARLoc extends AbstractNodeMain {
 
   @Override
   public void onStart(ConnectedNode connectedNode) {
-    final Parameter parameter = Parameter.createFromParameterTree(connectedNode.getParameterTree());
-    final Publisher<PoseStamped> posePublisher =
-        connectedNode.newPublisher(parameter.poseTopicName(), PoseStamped._TYPE);
+    final Parameter parameter = Parameter.createFrom(connectedNode.getParameterTree());
+    final Publisher<PoseStamped> fusedPosePublisher =
+        connectedNode.newPublisher(parameter.fusedPoseTopicName(), PoseStamped._TYPE);
 
     final PoseEstimator poseEstimator =
-        ArMarkerPoseEstimator.create(connectedNode, parameter, posePublisher);
+        ArMarkerPoseEstimator.create(connectedNode, parameter, fusedPosePublisher);
 
     final BebopOdomVelocityEstimator velocityEstimator = BebopOdomVelocityEstimator.create();
 
@@ -30,8 +30,11 @@ public class ARLoc extends AbstractNodeMain {
             connectedNode.<Odometry>newSubscriber("/bebop/odom", Odometry._TYPE));
     odomSubscriber.registerMessageObserver(velocityEstimator);
 
+    final Publisher<PoseStamped> markerPosePubliser =
+        connectedNode.newPublisher(parameter.markerPoseTopicName(), PoseStamped._TYPE);
+
     final FusedLocalization fusedLocalization =
         FusedLocalization.create(
-            poseEstimator, velocityEstimator, posePublisher, 40, connectedNode);
+            poseEstimator, velocityEstimator, markerPosePubliser, 40, connectedNode);
   }
 }
