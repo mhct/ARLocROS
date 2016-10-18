@@ -165,7 +165,8 @@ public final class ComputePose {
 				// draw red rectangle around detected marker
 				Core.rectangle(image2, new Point(vertex2d[0].x, vertex2d[0].y), new Point(vertex2d[2].x, vertex2d[2].y),
 						new Scalar(0, 0, 255));
-				Core.putText(image2, String.valueOf(id), new Point((vertex2d[2].x+vertex2d[0].x)/2.0, vertex2d[0].y - 5), 
+				final String markerFile = patternmap.get(id).replace("4x4_", "").replace(".patt", "");
+				Core.putText(image2, markerFile, new Point((vertex2d[2].x+vertex2d[0].x)/2.0, vertex2d[0].y - 5),
 						4, 1, new Scalar(250, 0, 0));
 			}
 
