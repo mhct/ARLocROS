@@ -75,9 +75,9 @@ public final class MarkerConfig {
 	                final Marker marker = Marker.builder()
 	                        .patternFile(patternFilename)
 	                        .upperleft(new Point3(x, y, z))
-	                        .upperright(new Point3(x, y - size, z))
-	                        .lowerright(new Point3(x, y - size, z - size))
-	                        .lowerleft(new Point3(x, y, z - size))
+	                        .upperright(new Point3(x, y, z + size))
+	                        .lowerright(new Point3(x, y - size, z + size))
+	                        .lowerleft(new Point3(x, y - size, z))
 	                        .build();
 	
 	                map.put(patternFilename, marker);
