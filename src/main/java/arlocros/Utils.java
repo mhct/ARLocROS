@@ -16,35 +16,45 @@
 
 package arlocros;
 
-import java.util.Arrays;
-
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-
+import org.opencv.imgproc.Imgproc;
 import sensor_msgs.Image;
+
+import java.util.Arrays;
 
 public class Utils {
 
-	static public Mat matFromImage(final Image source) throws Exception {
-		byte[] imageInBytes = source.getData().array();
-		imageInBytes = Arrays.copyOfRange(imageInBytes, source.getData().arrayOffset(), imageInBytes.length);
-		Mat cvImage = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC3);
-		cvImage.put(0, 0, imageInBytes);
-		return cvImage;
-	}
+  static public Mat matFromImage(final Image source) throws Exception {
+    byte[] imageInBytes = source.getData().array();
+    imageInBytes = Arrays.copyOfRange(imageInBytes, source.getData().arrayOffset(),
+        imageInBytes.length);
+    Mat cvImage = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC3);
+    cvImage.put(0, 0, imageInBytes);
+    return cvImage;
+  }
 
-	static public void tresholdContrastBlackWhite(Mat image2, double d) {
-		int width = image2.width();
-		int height = image2.height();
-		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++) {
-				double[] rgb = image2.get(j, i);
-				double[] rgbnew = new double[rgb.length];
-				if (rgb[0] + rgb[1] + rgb[2] < d)
-					rgbnew[0] = rgbnew[1] = rgbnew[2] = 0.0;
-				else
-					rgbnew[0] = rgbnew[1] = rgbnew[2] = 255.0;
-				image2.put(j, i, rgbnew);
-			}
-	}
+  static public void tresholdContrastBlackWhite(Mat image2, double d) {
+//		int width = image2.width();
+//		int height = image2.height();
+//		for (int i = 0; i < width; i++)
+//			for (int j = 0; j < height; j++) {
+//				double[] rgb = image2.get(j, i);
+//				double[] rgbnew = new double[rgb.length];
+//				if (rgb[0] + rgb[1] + rgb[2] < d)
+//					rgbnew[0] = rgbnew[1] = rgbnew[2] = 0.0;
+//				else
+//					rgbnew[0] = rgbnew[1] = rgbnew[2] = 255.0;
+//				image2.put(j, i, rgbnew);
+//			}
+
+    final Mat transformMat = new Mat(1, 3, CvType.CV_64FC1);
+    final int row = 0;
+    final int col = 0;
+    transformMat.put(row, col, 0.33, 0.33, 0.34);
+    Core.transform(image2, image2, transformMat);
+    Imgproc.threshold(image2, image2, d / 3, 255, Imgproc.THRESH_BINARY);
+    Imgproc.cvtColor(image2, image2, Imgproc.COLOR_GRAY2RGB);
+  }
 }
