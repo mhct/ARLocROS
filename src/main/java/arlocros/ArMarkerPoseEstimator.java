@@ -514,6 +514,7 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 				// frame_id too
 				posestamped.getHeader().setFrameId("map");
 				posestamped.getHeader().setStamp(connectedNode.getCurrentTime());
+				posePublisher.publish(posestamped);
 				mostRecentPose.set(posestamped);
 			}
 		});
