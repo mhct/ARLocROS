@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2016 Marvin Ferber.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,10 +17,12 @@
 package arlocros;
 
 import org.opencv.core.Point3;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +36,46 @@ public final class MarkerConfig {
   private MarkerConfig(String configfile, String patternDirectory) {
     float size = 0;
     try {
-      final BufferedReader bufferedReader = new BufferedReader(new FileReader(configfile));
-      String line = bufferedReader.readLine();
-      while (line != null) {
-        size = readPatternSizeFromLine(size, line);
-        readPatternFromLine(patternDirectory, size, line);
-        line = bufferedReader.readLine();
+      final Yaml yaml = new Yaml();
+      final InputStream input = new FileInputStream(new File(configfile));
+      final Map<String, Object> config = (Map<String, Object>) yaml.load(input);
+      input.close();
+
+      size = (float) config.get("marker_size");
+      final Map<String, List<Float>> relativeCornerPosition =
+          (Map<String, List<Float>>) config.get("relative_corner_position");
+      final Map<String, List<Float>> markers = (Map<String, List<Float>>) config.get("markers");
+
+      for (final Map.Entry<String, List<Float>> entry : markers.entrySet()) {
+        final String pattern = patternDirectory + entry.getKey();
+        final List<Float> pos = entry.getValue();
+        final Marker marker =
+            Marker.builder()
+                .patternFile(pattern)
+                .upperleft(
+                    new Point3(
+                        pos.get(0) + relativeCornerPosition.get("upper_left").get(0) * size,
+                        pos.get(1) + relativeCornerPosition.get("upper_left").get(1) * size,
+                        pos.get(2) + relativeCornerPosition.get("upper_left").get(2) * size))
+                .upperright(
+                    new Point3(
+                        pos.get(0) + relativeCornerPosition.get("upper_right").get(0) * size,
+                        pos.get(1) + relativeCornerPosition.get("upper_right").get(1) * size,
+                        pos.get(2) + relativeCornerPosition.get("upper_right").get(2) * size))
+                .lowerright(
+                    new Point3(
+                        pos.get(0) + relativeCornerPosition.get("lower_right").get(0) * size,
+                        pos.get(1) + relativeCornerPosition.get("lower_right").get(1) * size,
+                        pos.get(2) + relativeCornerPosition.get("lower_right").get(2) * size))
+                .lowerleft(
+                    new Point3(
+                        pos.get(0) + relativeCornerPosition.get("lower_left").get(0) * size,
+                        pos.get(1) + relativeCornerPosition.get("lower_left").get(1) * size,
+                        pos.get(2) + relativeCornerPosition.get("lower_left").get(2) * size))
+                .build();
+
+        map.put(pattern, marker);
       }
-      bufferedReader.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -51,42 +85,6 @@ public final class MarkerConfig {
 
   public static MarkerConfig createFromConfig(String configfile, String patternDirectory) {
     return new MarkerConfig(configfile, patternDirectory);
-  }
-
-  private void readPatternFromLine(String patternDirectory, float size, String line) {
-    if (line.contains("patt")) {
-      try {
-        final String[] values = line.split(" ");
-        final float x = Float.parseFloat(values[0]);
-        final float y = Float.parseFloat(values[1]);
-        final float z = Float.parseFloat(values[2]);
-
-        final String pattern = patternDirectory + values[3];
-        final Marker marker = Marker.builder()
-            .patternFile(pattern)
-            .upperleft(new Point3(x, y, z))
-            .upperright(new Point3(x, y, z + size))
-            .lowerright(new Point3(x, y - size, z + size))
-            .lowerleft(new Point3(x, y - size, z))
-            .build();
-
-        map.put(pattern, marker);
-        // patternlist.add(pattern);
-        // System.out.println("Adding pattern "+pattern);
-      } catch (NumberFormatException e) {
-        return;
-      }
-    }
-  }
-
-  private static float readPatternSizeFromLine(float size, String line) {
-    float newSize = size;
-    if (line.contains("markersize")) {
-      newSize = Float.parseFloat(line.split(" ")[1]);
-      // System.out.println(s+" "+Float.parseFloat(s.split("
-      // ")[1]));
-    }
-    return newSize;
   }
 
   public List<Point3> create3dpointlist(String string) {
@@ -114,7 +112,6 @@ public final class MarkerConfig {
       list.add(m.upperright());
       list.add(m.lowerright());
       list.add(m.lowerleft());
-
     }
     return list;
   }
@@ -130,5 +127,4 @@ public final class MarkerConfig {
     }
     return patternlist;
   }
-
 }
