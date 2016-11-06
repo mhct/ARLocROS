@@ -41,14 +41,14 @@ public final class MarkerConfig {
       final Map<String, Object> config = (Map<String, Object>) yaml.load(input);
       input.close();
 
-      size = (float) config.get("marker_size");
-      final Map<String, List<Float>> relativeCornerPosition =
-          (Map<String, List<Float>>) config.get("relative_corner_position");
-      final Map<String, List<Float>> markers = (Map<String, List<Float>>) config.get("markers");
+      size = (float) (double) config.get("marker_size");
+      final Map<String, List<Double>> relativeCornerPosition =
+          (Map<String, List<Double>>) config.get("relative_corner_position");
+      final Map<String, List<Double>> markers = (Map<String, List<Double>>) config.get("markers");
 
-      for (final Map.Entry<String, List<Float>> entry : markers.entrySet()) {
+      for (final Map.Entry<String, List<Double>> entry : markers.entrySet()) {
         final String pattern = patternDirectory + entry.getKey();
-        final List<Float> pos = entry.getValue();
+        final List<Double> pos = entry.getValue();
         final Marker marker =
             Marker.builder()
                 .patternFile(pattern)
