@@ -4,6 +4,7 @@ import jp.nyatla.nyartoolkit.core.NyARException;
 import jp.nyatla.nyartoolkit.core.raster.rgb.INyARRgbRaster;
 import jp.nyatla.nyartoolkit.core.raster.rgb.NyARRgbRaster;
 import jp.nyatla.nyartoolkit.core.types.NyARBufferType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.opencv.core.Mat;
 
 import java.awt.image.BufferedImage;
@@ -54,7 +55,7 @@ public final class NyARImageHelper extends NyARRgbRaster {
             ra._buf = ((DataBufferByte) (bimg.getRaster().getDataBuffer())).getData();
             ra._rgb_pixel_driver.switchRaster(ra);
         } catch (NyARException e) {
-            e.printStackTrace();
+            System.out.println(ExceptionUtils.getStackTrace(e));
         }
 
         return ra;

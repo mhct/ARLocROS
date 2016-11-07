@@ -25,6 +25,7 @@ import geometry_msgs.Transform;
 import geometry_msgs.TransformStamped;
 import geometry_msgs.Vector3;
 import jp.nyatla.nyartoolkit.core.NyARException;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
@@ -175,7 +176,7 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 						}
 
 					} catch (Exception e) {
-						e.printStackTrace();
+						log.error(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -345,7 +346,7 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 					try {
 						transform_cam_odom = transformationService.lookupTransform(targetFrame, sourceFrame);
 					} catch (Exception e) {
-						e.printStackTrace();
+						log.error(ExceptionUtils.getStackTrace(e));
 						log.info("Cloud not get transformation from " + parameter.cameraFrameName() + " to " + "odom! "
 								+ "However, " + "will continue..");
 						return;
@@ -432,7 +433,7 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 					try {
 						transform_cam_base = transformationService.lookupTransform(targetFrame, sourceFrame);
 					} catch (Exception e) {
-						e.printStackTrace();
+						log.error(ExceptionUtils.getStackTrace(e));
 						log.info("Cloud not get transformation from " + parameter.cameraFrameName() + " to "
 								+ "base_link! " + "However, will continue..");
 						// cancel this loop..no result can be computed
@@ -535,7 +536,7 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 			try {
 				TimeUnit.MILLISECONDS.sleep(100);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.error(ExceptionUtils.getStackTrace(e));
 			}
 			cameraParamsOptional = cameraInfoService.getCameraParams();
 		}

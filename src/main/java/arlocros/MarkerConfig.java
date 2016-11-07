@@ -16,6 +16,7 @@
 
 package arlocros;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.opencv.core.Point3;
 import org.yaml.snakeyaml.Yaml;
 
@@ -77,7 +78,7 @@ public final class MarkerConfig {
         map.put(pattern, marker);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(ExceptionUtils.getStackTrace(e));
     }
 
     patterntSize = size;

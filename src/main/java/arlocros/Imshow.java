@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 
 import javax.swing.WindowConstants;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -96,7 +97,7 @@ public class Imshow {
 			frame.label.updateUI();
 			//frame.Window.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(ExceptionUtils.getStackTrace(e));
 		}
 	}
 }
