@@ -35,7 +35,8 @@ public class Utils {
     return cvImage;
   }
 
-  static public void tresholdContrastBlackWhite(Mat image2, double d) {
+  static public void tresholdContrastBlackWhite(Mat image2, double d,
+      boolean invertBlackWhiteColor) {
 //		int width = image2.width();
 //		int height = image2.height();
 //		for (int i = 0; i < width; i++)
@@ -55,6 +56,9 @@ public class Utils {
     transformMat.put(row, col, 0.33, 0.33, 0.34);
     Core.transform(image2, image2, transformMat);
     Imgproc.threshold(image2, image2, d / 3, 255, Imgproc.THRESH_BINARY);
+    if (invertBlackWhiteColor) {
+      Core.bitwise_not(image2, image2);
+    }
     Imgproc.cvtColor(image2, image2, Imgproc.COLOR_GRAY2RGB);
   }
 }

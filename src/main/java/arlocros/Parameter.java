@@ -33,6 +33,8 @@ public abstract class Parameter {
 
   public abstract double blackWhiteContrastLevel();
 
+  public abstract boolean invertBlackWhiteColor();
+
   public static Parameter createFrom(ParameterTree parameterTree) {
     return builder()
         .patternDirectory(parameterTree.getString("/pattern_dir"))
@@ -47,6 +49,7 @@ public abstract class Parameter {
         .visualization(parameterTree.getBoolean("/visualization"))
         .useThreshold(parameterTree.getBoolean("/use_threshold"))
         .blackWhiteContrastLevel(parameterTree.getDouble("/black_white_contrast_level"))
+        .invertBlackWhiteColor(parameterTree.getBoolean("/invert_black_white_color"))
         .build();
   }
 
@@ -79,6 +82,8 @@ public abstract class Parameter {
     public abstract Builder useThreshold(boolean value);
 
     public abstract Builder blackWhiteContrastLevel(double value);
+
+    public abstract Builder invertBlackWhiteColor(boolean value);
 
     public abstract Parameter build();
   }
