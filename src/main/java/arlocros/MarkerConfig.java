@@ -47,6 +47,7 @@ public final class MarkerConfig {
       input.close();
 
       size = (float) (double) config.get("marker_size");
+      logger.info("Markers size is: {}", size);
       final Map<String, List<Double>> relativeCornerPosition =
           (Map<String, List<Double>>) config.get("relative_corner_position");
       final Map<String, List<Double>> markers = (Map<String, List<Double>>) config.get("markers");
