@@ -1,0 +1,5 @@
+<configuration>
+  <logger name="arlocros" level="DEBUG" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+</configuration>

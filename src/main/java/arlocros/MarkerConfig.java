@@ -18,6 +18,8 @@ package arlocros;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.opencv.core.Point3;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -30,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class MarkerConfig {
+
+  private static final Logger logger = LoggerFactory.getLogger(MarkerConfig.class);
 
   private final Map<String, Marker> map = new HashMap<>();
   private final float patterntSize;
@@ -78,7 +82,7 @@ public final class MarkerConfig {
         map.put(pattern, marker);
       }
     } catch (IOException e) {
-      System.out.println(ExceptionUtils.getStackTrace(e));
+      logger.info("Exception while reading marker configs.", e);
     }
 
     patterntSize = size;

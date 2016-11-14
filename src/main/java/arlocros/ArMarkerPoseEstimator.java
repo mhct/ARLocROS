@@ -176,7 +176,7 @@ public final class ArMarkerPoseEstimator implements PoseEstimator {
 						}
 
 					} catch (Exception e) {
-						log.error(ExceptionUtils.getStackTrace(e));
+						logger.info("An exception occurs.", e);
 					}
 				}
 			}

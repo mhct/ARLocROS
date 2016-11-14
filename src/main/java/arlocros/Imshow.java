@@ -30,6 +30,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to display an OpenCV image represented as a Mat using only one
@@ -37,6 +39,8 @@ import org.opencv.imgproc.Imgproc;
  *
  */
 public class Imshow {
+
+	private static final Logger logger = LoggerFactory.getLogger(Imshow.class);
 
 	private static Imshow frame;
 	public JFrame Window;
@@ -96,8 +100,8 @@ public class Imshow {
 			frame.Window.pack();
 			frame.label.updateUI();
 			//frame.Window.setVisible(true);
-		} catch (Exception e) {
-			System.out.println(ExceptionUtils.getStackTrace(e));
+		} catch (RuntimeException e) {
+			logger.info("Exception while visualizing.", e);
 		}
 	}
 }
