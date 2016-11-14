@@ -55,24 +55,24 @@ public final class MarkerConfig {
                 .patternFile(pattern)
                 .upperleft(
                     new Point3(
-                        pos.get(0) + relativeCornerPosition.get("upper_left").get(0) * size,
-                        pos.get(1) + relativeCornerPosition.get("upper_left").get(1) * size,
-                        pos.get(2) + relativeCornerPosition.get("upper_left").get(2) * size))
+                        pos.get(0) + relativeCornerPosition.get("upper_left").get(0),
+                        pos.get(1) + relativeCornerPosition.get("upper_left").get(1),
+                        pos.get(2) + relativeCornerPosition.get("upper_left").get(2)))
                 .upperright(
                     new Point3(
-                        pos.get(0) + relativeCornerPosition.get("upper_right").get(0) * size,
-                        pos.get(1) + relativeCornerPosition.get("upper_right").get(1) * size,
-                        pos.get(2) + relativeCornerPosition.get("upper_right").get(2) * size))
+                        pos.get(0) + relativeCornerPosition.get("upper_right").get(0),
+                        pos.get(1) + relativeCornerPosition.get("upper_right").get(1),
+                        pos.get(2) + relativeCornerPosition.get("upper_right").get(2)))
                 .lowerright(
                     new Point3(
-                        pos.get(0) + relativeCornerPosition.get("lower_right").get(0) * size,
-                        pos.get(1) + relativeCornerPosition.get("lower_right").get(1) * size,
-                        pos.get(2) + relativeCornerPosition.get("lower_right").get(2) * size))
+                        pos.get(0) + relativeCornerPosition.get("lower_right").get(0),
+                        pos.get(1) + relativeCornerPosition.get("lower_right").get(1),
+                        pos.get(2) + relativeCornerPosition.get("lower_right").get(2)))
                 .lowerleft(
                     new Point3(
-                        pos.get(0) + relativeCornerPosition.get("lower_left").get(0) * size,
-                        pos.get(1) + relativeCornerPosition.get("lower_left").get(1) * size,
-                        pos.get(2) + relativeCornerPosition.get("lower_left").get(2) * size))
+                        pos.get(0) + relativeCornerPosition.get("lower_left").get(0),
+                        pos.get(1) + relativeCornerPosition.get("lower_left").get(1),
+                        pos.get(2) + relativeCornerPosition.get("lower_left").get(2)))
                 .build();
 
         map.put(pattern, marker);
